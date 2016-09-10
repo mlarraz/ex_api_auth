@@ -1,6 +1,6 @@
-defmodule ExApiAuthTest do
+defmodule ExAPIAuthTest do
   use ExUnit.Case
-  doctest ExApiAuth
+  doctest ExAPIAuth
 
   test "the truth" do
     assert 1 + 1 == 2

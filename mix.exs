@@ -1,4 +1,4 @@
-defmodule ExApiAuth.Mixfile do
+defmodule ExAPIAuth.Mixfile do
   use Mix.Project
 
   def project do

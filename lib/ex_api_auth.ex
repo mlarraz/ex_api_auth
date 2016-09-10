@@ -1,8 +1,8 @@
-defmodule ExApiAuth do
-  alias ExApiAuth.Request
+defmodule ExAPIAuth do
+  alias ExAPIAuth.Request
 
   @type c :: %Plug.Conn{}
-  @type r :: %ExApiAuth.Request{}
+  @type r :: %ExAPIAuth.Request{}
 
   @doc """
     Generates a random Base64 encoded secret key

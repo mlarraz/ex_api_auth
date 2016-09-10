@@ -1,6 +1,6 @@
-# ExApiAuth
+# ExAPIAuth
 
-An Elixir port of mgomes' ApiAuth.
+An Elixir port of [mgomes/api_auth](https://github.com/mgomes/api_auth).
 
 ## Installation
 
@@ -22,3 +22,12 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
+## Usage
+
+Signing a request:
+
+```elixir
+access_id  = "someone"
+secret_key = ExAPIAuth.generate_secret_key
+
+```

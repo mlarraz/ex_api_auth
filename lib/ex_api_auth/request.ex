@@ -1,4 +1,4 @@
-defmodule ExApiAuth.Request do
+defmodule ExAPIAuth.Request do
   defstruct method:       "GET",
             body:         nil,
             content_md5:  nil,
@@ -12,13 +12,13 @@ defmodule ExApiAuth.Request do
   @doc """
     Decomposes an HTTP request into a string representation for signing.
 
-    Can take either `%ExApiAuth.Request{}` or `%Plug.Conn{}` as an input
+    Can take either `%ExAPIAuth.Request{}` or `%Plug.Conn{}` as an input
   """
   def canonical_string(request)
 
   @spec canonical_string(c) :: binary
   def canonical_string(%Plug.Conn{} = conn) do
-    req = %ExApiAuth.Request{
+    req = %ExAPIAuth.Request{
       method:       conn.method,
       uri:          parse_uri(conn),
       content_md5:  conn |> Plug.Conn.get_req_header("content_md5")  |> List.first,
@@ -31,7 +31,7 @@ defmodule ExApiAuth.Request do
 
   @spec canonical_string(r) :: binary
 
-  def canonical_string(%ExApiAuth.Request{content_md5: nil} = req) do
+  def canonical_string(%ExAPIAuth.Request{content_md5: nil} = req) do
     md5 = case req.body do
       nil  -> ""
       body -> :crypto.hash(:md5, body) |> Base.encode64
@@ -40,7 +40,7 @@ defmodule ExApiAuth.Request do
     canonical_string(%{req | content_md5: md5})
   end
 
-  def canonical_string(%ExApiAuth.Request{} = req) do
+  def canonical_string(%ExAPIAuth.Request{} = req) do
     [
       String.upcase(req.method),
       req.content_type,
