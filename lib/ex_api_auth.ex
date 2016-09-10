@@ -1,8 +1,11 @@
 defmodule ExAPIAuth do
+  @moduledoc """
+  """
+
   alias ExAPIAuth.Request
 
   @type c :: %Plug.Conn{}
-  @type r :: %ExAPIAuth.Request{}
+  @type r :: %Request{}
 
   @doc """
     Generates a random Base64 encoded secret key
@@ -12,7 +15,7 @@ defmodule ExAPIAuth do
   """
   @spec generate_secret_key :: binary
   def generate_secret_key do
-    :crypto.hash(:sha512, :crypto.strong_rand_bytes(512)) |> Base.encode64
+    :sha512 |> :crypto.hash(:crypto.strong_rand_bytes(512)) |> Base.encode64
   end
 
   @doc """
@@ -29,7 +32,7 @@ defmodule ExAPIAuth do
 
   @spec sign!(binary, binary) :: binary
   defp sign!(canonical_string, secret) do
-    :crypto.hmac(:sha, secret, canonical_string) |> Base.encode64
+    :sha |> :crypto.hmac(secret, canonical_string) |> Base.encode64
   end
 
   @doc """
@@ -57,7 +60,7 @@ defmodule ExAPIAuth do
   @spec access_id(c) :: binary | nil
   def access_id(%Plug.Conn{} = conn) do
     case parse_header(conn) do
-      [access_id, _] -> access_id
+      [match, _] -> match
       nil -> nil
     end
   end

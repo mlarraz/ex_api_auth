@@ -1,4 +1,7 @@
 defmodule ExAPIAuth.Request do
+  @moduledoc """
+  """
+
   defstruct method:       "GET",
             body:         nil,
             content_md5:  nil,
@@ -18,7 +21,7 @@ defmodule ExAPIAuth.Request do
 
   @spec canonical_string(c) :: binary
   def canonical_string(%Plug.Conn{} = conn) do
-    req = %ExAPIAuth.Request{
+    req = %__MODULE__{
       method:       conn.method,
       uri:          parse_uri(conn),
       content_md5:  conn |> Plug.Conn.get_req_header("content_md5")  |> List.first,
@@ -31,16 +34,16 @@ defmodule ExAPIAuth.Request do
 
   @spec canonical_string(r) :: binary
 
-  def canonical_string(%ExAPIAuth.Request{content_md5: nil} = req) do
+  def canonical_string(%__MODULE__{content_md5: nil} = req) do
     md5 = case req.body do
       nil  -> ""
-      body -> :crypto.hash(:md5, body) |> Base.encode64
+      body -> :md5 |> :crypto.hash(body) |> Base.encode64
     end
 
     canonical_string(%{req | content_md5: md5})
   end
 
-  def canonical_string(%ExAPIAuth.Request{} = req) do
+  def canonical_string(%__MODULE__{} = req) do
     [
       String.upcase(req.method),
       req.content_type,

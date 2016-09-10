@@ -28,6 +28,7 @@ Signing a request:
 
 ```elixir
 access_id  = "someone"
-secret_key = ExAPIAuth.generate_secret_key
+secret_key = ExAPIAuth.generate_secret_key # or any string you want
 
+header = ExAPIAuth.sign!(request, access_id, secret_key)
 ```
