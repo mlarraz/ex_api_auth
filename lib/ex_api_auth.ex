@@ -1,53 +1,51 @@
 defmodule ExApiAuth do
-  def sign!(request, access_id, secret_key) do
+  alias ExApiAuth.Request
+
+  @type conn :: %Plug.Conn{}
+  @type req  :: %ExApiAuth.Request{}
+
+  @spec sign!(req, binary, binary) :: binary
+  def sign!(%Request{} = request, access_id, secret_key) do
+    signature = sign!(Request.canonical_string(request), secret_key)
+
+    "APIAuth #{access_id}:#{signature}"
   end
 
   @spec sign!(binary, binary) :: binary
-  def sign!(canonical_string, secret) do
+  defp sign!(canonical_string, secret) do
     :crypto.hmac(:sha, secret, canonical_string) |> Base.encode64
   end
 
-  def authentic?(signed_request, secret_key) do
+  @spec authentic?(conn, binary) :: boolean
+  def authentic?(%Plug.Conn{} = conn, secret_key) do
+    case parse_header(conn) do
+      [_, signature] ->
+        authentic?(conn, secret_key, signature)
+      _ ->
+        false
+    end
   end
 
-  @type conn :: %Plug.Conn{}
+  defp authentic?(conn, secret_key, signature) do
+    sign!(Request.canonical_string(conn), secret_key) == signature
+  end
 
   @spec access_id(conn) :: binary | nil
-  def access_id(%Plug.Conn{req_headers: headers}) do
-    case get_access_id_and_signed_string(headers["authorization"]) do
+  def access_id(%Plug.Conn{} = conn) do
+    case parse_header(conn) do
       [access_id, _] -> access_id
       nil -> nil
     end
   end
 
-  defp get_access_id_and_signed_string(nil), do: nil
-  defp get_access_id_and_signed_string(auth_header) when is_binary auth_header do
+  defp parse_header(nil), do: nil
+
+  defp parse_header(%Plug.Conn{} = conn) do
+    parse_header(conn |> Plug.Conn.get_req_header("authorization") |> List.first)
+  end
+
+  @spec parse_header(binary) :: [binary] | nil
+  defp parse_header(auth_header) when is_binary auth_header do
     Regex.run(~r{APIAuth ([^:]+):(.+)$}, auth_header, capture: :all_but_first)
-  end
-
-  defp canonical_string(method, "", headers, body) do
-    canonical_string(method, "/", headers, body)
-  end
-
-  defp canonical_string(method, uri, headers, "") do
-    canonical_string(method, uri, headers)
-  end
-
-  defp canonical_string(method, uri, headers) do
-    [
-      String.upcase(method),
-      headers["content-type"],
-      headers["content-md5"],
-      uri,
-      headers["date"]
-    ] |> Enum.join(",")
-  end
-
-  defp parse_uri(%Plug.Conn{request_path: request_path, query_string: ""}) do
-    request_path
-  end
-
-  defp parse_uri(%Plug.Conn{request_path: request_path, query_string: query_string}) do
-    "#{request_path}?#{query_string}"
   end
 end
