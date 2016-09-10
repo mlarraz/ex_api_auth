@@ -8,10 +8,10 @@ defmodule ExAPIAuth do
   @type r :: %Request{}
 
   @doc """
-    Generates a random Base64 encoded secret key
+  Generates a random Base64 encoded secret key
 
-    Store this key along with the access key that will be used for
-    authenticating the client
+  Store this key along with the access key that will be used for
+  authenticating the client
   """
   @spec generate_secret_key :: binary
   def generate_secret_key do
@@ -19,9 +19,9 @@ defmodule ExAPIAuth do
   end
 
   @doc """
-    Signs a `request` using the client's `access_id` and `secret_key`.
+  Signs a `request` using the client's `access_id` and `secret_key`.
 
-    Returns a valid authorization header, which you must *manually* add to your HTTP request.
+  Returns a valid authorization header, which you must *manually* add to your HTTP request.
   """
   @spec sign!(r, binary, binary) :: binary
   def sign!(%Request{} = request, access_id, secret_key) do
@@ -36,8 +36,8 @@ defmodule ExAPIAuth do
   end
 
   @doc """
-    Determines if the request is authentic given the request and the client's
-    secret key. Returns `true` if the request is authentic and `false` otherwise.
+  Determines if the request is authentic given the request and the client's
+  secret key. Returns `true` if the request is authentic and `false` otherwise.
   """
   @spec authentic?(c, binary) :: boolean
   def authentic?(%Plug.Conn{} = conn, secret_key) do
@@ -55,7 +55,7 @@ defmodule ExAPIAuth do
   end
 
   @doc """
-    Returns the access id from the request's authorization header
+  Returns the access id from the request's authorization header
   """
   @spec access_id(c) :: binary | nil
   def access_id(%Plug.Conn{} = conn) do

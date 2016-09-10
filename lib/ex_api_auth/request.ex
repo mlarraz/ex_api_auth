@@ -1,5 +1,20 @@
 defmodule ExAPIAuth.Request do
   @moduledoc """
+  Prepares an existing HTTP request for signing
+
+  ## Struct
+  The relevant subset of an HTTP request.
+
+  It is the user's responsibility to populate this
+  with the same data as the actual request they
+  plan on making.
+
+  * `method` - the request method as a binary, defaults to "GET"
+  * `body` - the request's body, if present
+  * `uri` - the request path, including query string if present
+  * `content_md5` - the value of the request's "content_md5" header
+  * `content_type` - the value of the request's "content_type" header
+  * `date` - the value of the request's "date" header
   """
 
   defstruct method:       "GET",
@@ -13,9 +28,9 @@ defmodule ExAPIAuth.Request do
   @type c :: %Plug.Conn{}
 
   @doc """
-    Decomposes an HTTP request into a string representation for signing.
+  Decomposes an HTTP request into a string representation for signing.
 
-    Can take either `%ExAPIAuth.Request{}` or `%Plug.Conn{}` as an input
+  Can take either `%ExAPIAuth.Request{}` or `%Plug.Conn{}` as an input
   """
   def canonical_string(request)
 
