@@ -7,7 +7,16 @@ defmodule ExApiAuth.Request do
             date:         :httpd_util.rfc1123_date
 
   @type r :: %__MODULE__{}
+  @type c :: %Plug.Conn{}
 
+  @doc """
+    Decomposes an HTTP request into a string representation for signing.
+
+    Can take either `%ExApiAuth.Request{}` or `%Plug.Conn{}` as an input
+  """
+  def canonical_string(request)
+
+  @spec canonical_string(c) :: binary
   def canonical_string(%Plug.Conn{} = conn) do
     req = %ExApiAuth.Request{
       method:       conn.method,
@@ -40,6 +49,8 @@ defmodule ExApiAuth.Request do
       req.date
     ] |> Enum.join(",")
   end
+
+  @spec parse_uri(c) :: binary
 
   defp parse_uri(%Plug.Conn{request_path: request_path, query_string: ""}) do
     request_path

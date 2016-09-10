@@ -1,6 +1,6 @@
 # ExApiAuth
 
-**TODO: Add description**
+An Elixir port of mgomes' ApiAuth.
 
 ## Installation
 
