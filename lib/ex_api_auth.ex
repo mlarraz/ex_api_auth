@@ -72,6 +72,6 @@ defmodule ExAPIAuth do
 
   @spec parse_header(binary) :: [binary] | nil
   defp parse_header(auth_header) when is_binary auth_header do
-    Regex.run(~r{APIAuth ([^:]+):(.+)$}, auth_header, capture: :all_but_first)
+    Regex.run(~r{^\w+ ([^:]+):(.+)$}, auth_header, capture: :all_but_first)
   end
 end
