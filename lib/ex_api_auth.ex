@@ -22,6 +22,11 @@ defmodule ExAPIAuth do
   Signs a `request` using the client's `access_id` and `secret_key`.
 
   Returns a valid authorization header, which you must *manually* add to your HTTP request.
+
+  ## Examples:
+    iex> req = %ExAPIAuth.Request{date: "Sun, 11 Sep 2016 00:11:51 GMT"}
+    ...> ExAPIAuth.sign!(req, "tenant", "secret")
+    "APIAuth tenant:dcVrINe+HMhGTis8K6TPB2f/n+c="
   """
   @spec sign!(r, binary, binary) :: binary
   def sign!(%Request{} = request, access_id, secret_key) do
@@ -38,6 +43,10 @@ defmodule ExAPIAuth do
   @doc """
   Determines if the request is authentic given the request and the client's
   secret key. Returns `true` if the request is authentic and `false` otherwise.
+
+  ## Examples:
+    iex> ExAPIAuth.authentic?(%Plug.Conn{}, "secret")
+    false
   """
   @spec authentic?(c, binary) :: boolean
   def authentic?(%Plug.Conn{} = conn, secret_key) do
@@ -55,7 +64,17 @@ defmodule ExAPIAuth do
   end
 
   @doc """
-  Returns the access id from the request's authorization header
+  Returns the access id from the request's authorization header if present,
+  otherwise `nil`
+
+  ## Examples:
+
+    iex> conn = %Plug.Conn{req_headers: [{"authorization", "ApiAuth foo:bar"}]}
+    ...> ExAPIAuth.access_id(conn)
+    "foo"
+
+    iex> ExAPIAuth.access_id(%Plug.Conn{})
+    nil
   """
   @spec access_id(c) :: binary | nil
   def access_id(%Plug.Conn{} = conn) do

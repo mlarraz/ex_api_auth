@@ -31,6 +31,21 @@ defmodule ExAPIAuth.Request do
   Decomposes an HTTP request into a string representation for signing.
 
   Can take either `%ExAPIAuth.Request{}` or `%Plug.Conn{}` as an input
+
+  ## Examples
+    iex> conn = %Plug.Conn{
+    ...>   method: "POST", request_path: "/status", req_headers: [
+    ...>     {"date", "Sun, 11 Sep 2016 00:11:51 GMT"},
+    ...>     {"content_md5", "1B2M2Y8AsgTpgAmY7PhCfg=="},
+    ...>     {"content_type", "application/json"}
+    ...>   ]
+    ...> }
+    ...> ExAPIAuth.Request.canonical_string(conn)
+    "POST,application/json,1B2M2Y8AsgTpgAmY7PhCfg==,/status,Sun, 11 Sep 2016 00:11:51 GMT"
+
+    iex> req = %ExAPIAuth.Request{date: "Sun, 11 Sep 2016 00:29:56 GMT"}
+    ...> ExAPIAuth.Request.canonical_string(req)
+    "GET,,,/,Sun, 11 Sep 2016 00:29:56 GMT"
   """
   def canonical_string(request)
 
