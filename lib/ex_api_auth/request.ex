@@ -10,7 +10,6 @@ defmodule ExAPIAuth.Request do
   plan on making.
 
   * `method` - the request method as a binary, defaults to "GET"
-  * `body` - the request's body, if present
   * `uri` - the request path, including query string if present
   * `content_md5` - the value of the request's "content_md5" header
   * `content_type` - the value of the request's "content_type" header
@@ -18,11 +17,10 @@ defmodule ExAPIAuth.Request do
   """
 
   defstruct method:       "GET",
-            body:         nil,
             content_md5:  nil,
             content_type: "",
             uri:          "/",
-            date:         :httpd_util.rfc1123_date
+            date:         nil
 
   @type r :: %__MODULE__{}
   @type c :: %Plug.Conn{}
@@ -63,16 +61,6 @@ defmodule ExAPIAuth.Request do
   end
 
   @spec canonical_string(r) :: binary
-
-  def canonical_string(%__MODULE__{content_md5: nil} = req) do
-    md5 = case req.body do
-      nil  -> ""
-      body -> :md5 |> :crypto.hash(body) |> Base.encode64
-    end
-
-    canonical_string(%{req | content_md5: md5})
-  end
-
   def canonical_string(%__MODULE__{} = req) do
     [
       String.upcase(req.method),

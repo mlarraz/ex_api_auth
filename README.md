@@ -24,25 +24,37 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ## Usage
 
-Signing a request:
+### Signing a request
 
+Assuming you have some credentials:
 ```elixir
 access_id  = "someone"
 secret_key = ExAPIAuth.generate_secret_key # or any string you want
+```
 
-# you are responsible for setting the values here
+You can build an `Authorization` header:
+```elixir
+header = ExAPIAuth.sign!(request, access_id, secret_key)
+```
+
+Since most of the Elixir HTTP libraries don't use structs to represent their requests,
+we have to rely on the end user to provide us with the input values for the canonical string.
+
+```elixir
 request = %ExAPIAuth.Request{
   method:       "GET",
-  body:         "", # optional, only used on non-GET requests if you don't provide an MD5
 
   # from your headers
   content_md5:  "somehash",
   content_type: "application/json",
   date:         "Sun, 11 Sep 2016 00:11:51 GMT"
 }
-
-header = ExAPIAuth.sign!(request, access_id, secret_key)
 ```
 
-Since most of the Elixir HTTP libraries don't use structs to represent their requests,
-we have to rely on the end user to provide us with the input values for the canonical string.
+This also means we can't mutate a request, so the user is also responsible for setting the header.
+
+### Validating a request
+
+```elixir
+
+```
