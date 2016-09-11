@@ -55,6 +55,11 @@ This also means we can't mutate a request, so the user is also responsible for s
 
 ### Validating a request
 
+Currently only Plug is supported. 
 ```elixir
+# Get access is so you can look up matching secret key somehow
+access_id = ExAPIAuth.access_id(conn)
 
+# Returns a boolean
+ExAPIAuth.authentic?(conn, access_id, secret_key)
 ```
