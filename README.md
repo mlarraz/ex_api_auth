@@ -1,4 +1,6 @@
 # ExAPIAuth
+[![Build Status](https://travis-ci.org/mlarraz/ex_api_auth.svg?branch=master)](https://travis-ci.org/mlarraz/ex_api_auth)
+[![Coverage Status](https://coveralls.io/repos/github/mlarraz/ex_api_auth/badge.svg?branch=master)](https://coveralls.io/github/mlarraz/ex_api_auth?branch=master)
 
 An Elixir port of [mgomes/api_auth](https://github.com/mgomes/api_auth).
 
